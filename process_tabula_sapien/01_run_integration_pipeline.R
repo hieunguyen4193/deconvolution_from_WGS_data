@@ -73,6 +73,12 @@ for (celltype in names(test.res)){
 }
 
 unique.genedf <- data.frame(ENSEMBL = unique(top.genes$feature))
-read.csv(file.path(path.to.01.output, "convertdf.csv")) %>%
+convertdf <- read.csv(file.path(path.to.01.output, "convertdf.csv")) %>%
   subset(select = -c(X))
 unique.genedf <- merge(unique.genedf, convertdf, by.x = "ENSEMBL", by.y = "ENSEMBL")
+unique.genedf <- unique.genedf[, c("chrom", "gene_start", "gene_end", "ENSEMBL", "symbol")]
+unique.genedf <- unique.genedf %>%
+  arrange(chrom, gene_start)
+
+write.table(unique.genedf, file.path(path.to.01.output, "diff_gene_20240925.bed"), sep = "\t", row.names = FALSE, col.names = FALSE)
+
